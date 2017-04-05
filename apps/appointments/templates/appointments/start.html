@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Start</title>
+    </head>
+    <script>
+        function myFunction() {
+            document.getElementById("myDate").value = "1984-01-01";
+        }
+    </script>
+    <body>
+        <div class="container">
+            <div = "header">
+                <p>Hello, {{request.session.user_name}}</p>
+                <a href = "{% url 'login_registration:start' %}">Logout</a>
+            </div>
+            <div class="schedule">
+                <p>Here are your appoints for today, {{today}}</p>
+                <table>
+                    <thead>
+                        <th>Tasks</th>
+                        <th>Time</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </thead>
+                    <tbody>
+                    {% if appointments %}
+                        {% for appointment in appointments %}
+                            {% if appointment.user.id == request.session.user_id %}
+                                {% if appointment.date == today %}
+                                    <tr>
+                                        <td>{{appointment.task}}</td>
+                                        <td>{{appointment.time}}</td>
+                                        {% if appointment.time < time %}
+                                            <td>Done</td>
+                                        {% elif appointment.time > time %}
+                                            <td>Pending</td>
+                                        {% endif %}
+                                        <td>Pending</ts>
+                                        <td><a href="{% url 'appointments:edit' id=appointment.id %}">Edit</a> <a href="{% url 'appointments:delete' id=appointment.id %}">Delete</a></td>
+                                    </tr>
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="future">
+                <h3>Your Other Appointments</h3>
+                <table>
+                    <thead>
+                        <th>Tasks</th>
+                        <th>Date</th>
+                        <th>Time</th>
+                    </thead>
+                    <tbody>
+                    {% if appointments %}
+                        {% for appointment in appointments %}
+                            {% if appointment.user.id == request.session.user_id %}
+                                {% if appointment.date != today %}
+                                <tr>
+                                    <td>{{appointment.task}}</td>
+                                    <td>{{appointment.date}}</td>
+                                    <td>{{appointment.time}}</td>
+                                </tr>
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="new">
+                <h3>Add Appointment</h3>
+                <form action="{% url 'appointments:new' %}" method="post">
+                    {% csrf_token %}
+                    <label for="date">Date</label>
+                    <input type="date" name="date" id="myDate">
+                    <label for="time">Time</label>
+                    <input type="time" name="time">
+                    <label for="task">Task</label>
+                    <input type="text" name="task">
+                    <button type="submit" name="new" value="new">Add</button>
+                </form>
+            </div>
+        </div>
+    </body>
+</html>

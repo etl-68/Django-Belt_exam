@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Edit</title>
+    </head>
+    <script>
+        function myFunction() {
+            document.getElementById("myDate").value = "1984-01-01";
+        }
+    </script>
+    <body>
+        <div class="header">
+            <a href="{% url 'appointments:start' %}">Dashboard</a>
+            <a href="{% url 'login_registration:start' %}">Logout</a>
+        </div>
+        <form action="{% url 'appointments:change' id=appointment.id %}" method="post">
+            {% csrf_token %}
+            <label for="task">Task:</label>
+            <input type="text" name="task" placeholder="{{appointment.task}}">
+            <label for="status">Status:</label>
+            <select name="status">
+                <option value="Done">Done</option>
+                <option value="Pending">Pending</option>
+                <option value="Missed">Missed</option>
+            </select>
+            <label for="date">Date:</label>
+            <input type="date" name="date" value="{{appointment.date}}"  id="myDate">
+            <label for="time">Time:</label>
+            <input type="time" name="time" value="{{appointment.time}}">
+            <button type="submit" name="update" value="update">Update</button>
+        </form>
+    </body>
+</html>
